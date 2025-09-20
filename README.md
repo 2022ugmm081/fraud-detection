@@ -45,9 +45,6 @@ matplotlib
 seaborn
 
 scikit-learn
-
-xgboost (if installed in your environment)
-
 Dataset
 
 The notebook loads a CSV dataset (likely a fraud transaction dataset).
@@ -55,18 +52,8 @@ The notebook loads a CSV dataset (likely a fraud transaction dataset).
 Make sure to place the dataset in the same folder or update the path in the notebook.
 
 Models used
-
-Logistic Regression
-
-Random Forest Classifier
-
-XGBoost Classifier
-
-Decision Tree Classifier
-
-Support Vector Machine (SVC)
-
-KNN Classifier
+naive byes
+Lightbgm
 
 Evaluation metrics
 
