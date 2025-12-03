@@ -1,94 +1,136 @@
-# fraud-detection
-Summary
+🛡️ Fraud Detection Using Machine Learning
 
-This repository contains an exploratory data analysis and machine learning notebook for detecting fraud. The notebook performs data loading, preprocessing, feature engineering, model training, evaluation, and visualization.
+A complete ML pipeline for detecting financial fraud with advanced preprocessing, feature engineering, imbalanced learning techniques, and model comparison.
 
-Notebook structure
+📌 Project Overview
 
-The notebook fraud detection.ipynb contains a mix of Markdown and code cells. Top-level headings and some initial markdown excerpts:
+Financial fraud often represents less than 0.1% of real-world transactions—making it extremely difficult to detect with traditional machine learning models.
+This project builds a robust fraud detection pipeline that:
 
-Uploading file to Colab
+Cleans and preprocesses raw transactional data
 
-Importing the dataset
+Handles outliers intelligently
 
-Importing the CSV file
+Encodes categorical features
 
-Checking shape of Data
+Manages class imbalance (with and without SMOTE)
 
-Checking for the null values in the data
+Trains multiple ML models
 
-Checking the data distribution (balanced or unbalanced)
+Compares their performance based on precision, recall, F1-score
 
-Highly unbalanced dataset (fraud cases very few compared to normal)
+Identifies the best model for real-world fraud systems
 
-Checking for the outliers in the data
+The project notebook demonstrates step-by-step reasoning, model training, evaluation, and recommendation based on business trade-offs.
 
-Removing the outliers
+📂 Dataset
 
-Checking the class distribution of isFraud again
+The dataset consists of anonymized financial transactions with features such as:
 
-Observing that many fraud cases were removed, so handling outliers per-class
+step – time step
 
-Removing unused columns (nameOrig, nameDest)
+type – transaction type
 
-Encoding the type column using One-Hot-Encoding
+amount – transferred amount
 
-What is included
-Major Python packages
+oldbalanceOrg / newbalanceOrig
 
-numpy
+oldbalanceDest / newbalanceDest
 
-pandas
+isFraud – target variable
 
-matplotlib
+⚠️ Highly imbalanced: fraud cases represent a very small portion of total transactions.
 
-seaborn
+🧹 Data Cleaning & Preprocessing
+✔ Outlier Handling
 
-scikit-learn
-Dataset
+First attempted global outlier removal → removed many genuine frauds
 
-The notebook loads a CSV dataset (likely a fraud transaction dataset).
+Corrected approach: remove outliers only from non-fraud transactions
 
-Make sure to place the dataset in the same folder or update the path in the notebook.
+Fraud rows are kept intact to avoid losing crucial patterns
 
-Models used
-naive byes
-Lightbgm
+✔ Feature Engineering
 
-Evaluation metrics
+Removed non-useful ID columns: nameOrig, nameDest
 
-Accuracy Score
+Performed OneHotEncoding on type
 
-Precision, Recall, F1-score
+Selected 11 meaningful features for the model
 
-ROC-AUC
+✔ Train–Test Split
+
+Used stratify=y to maintain fraud ratio in train/test sets
+
+⚖️ Imbalance Handling
+
+This project evaluates models with and without SMOTE:
+
+❌ Without SMOTE
+
+Models trained on natural imbalance.
+
+✔ With SMOTE
+
+Minority class oversampled using:
+
+from imblearn.over_sampling import SMOTE
+X_train_res, y_train_res = SMOTE().fit_resample(X_train, y_train)
+
+🤖 Models Trained
+
+The following ML models were trained and tested:
+
+Decision Tree Classifier
+
+Logistic Regression
+
+XGBoost Classifier
+
+LightGBM Classifier
+
+Performance was evaluated using:
+
+Precision
+
+Recall
+
+F1-score
 
 Confusion Matrix
 
-Classification Report
+ROC-AUC (for LightGBM)
 
-Target column
+📊 Model Performance Summary
+🔹 Without SMOTE
+Model	Precision (Fraud)	Recall (Fraud)	F1-Score
+Decision Tree	0.91	0.88	0.89
+Logistic Regression	0.97	0.52	0.68
+XGBoost	0.91	0.82	0.86
+LightGBM	0.66	0.98	0.79
+🔹 With SMOTE
+Model	Precision (Fraud)	Recall (Fraud)	F1-Score
+Decision Tree	0.74	0.96	0.84
+Logistic Regression	0.03	0.93	0.06
+XGBoost	0.39	0.99	0.56
+LightGBM	0.38	0.99	0.55
+🏆 Best Model & Recommendation
+🔥 Best Balanced Model: Decision Tree (without SMOTE)
 
-Likely isFraud (binary classification target).
+It achieves strong precision (0.91) and recall (0.88) with the highest F1-score (0.89).
 
-Typical workflow
+📈 When to Use LightGBM
 
-Load dataset into Pandas.
+If maximum recall is the priority (catching nearly every fraud), use LightGBM without SMOTE (Recall: 0.98).
 
-Perform exploratory data analysis (EDA).
+🚫 Why Not Use SMOTE?
 
-Clean and preprocess data (null values, outliers, encoding categorical variables, scaling features).
+SMOTE caused models to:
 
-Train/test split.
+Predict too many false frauds
 
-Train multiple ML models.
+Drop precision drastically (0.38–0.03 range)
 
-Evaluate using classification metrics and visualizations.
+Reduce overall F1-score
 
-Compare results of different models.
-
-How to run locally
-
-Clone this repository.
-
-Ensure Python 3.8+ is installed.
+Therefore, SMOTE is not recommended for this dataset.
